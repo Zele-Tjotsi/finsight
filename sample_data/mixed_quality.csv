@@ -1,0 +1,6 @@
+transaction_id,customer_id,transaction_date,transaction_type,amount,currency,description
+TXN-2001,CUST-101,2026-10-16T09:00:00Z,PAYMENT,250.00,LSL,Valid payment
+TXN-2002,CUST-102,NOT-A-DATE,TRANSFER,500.00,LSL,Invalid date
+TXN-2003,CUST-103,2026-10-16T11:00:00Z,PAYMENT,INVALID,LSL,Invalid amount
+TXN-2004,CUST-104,2026-10-16T12:00:00Z,REFUND,75.00,LSL,Valid refund
+TXN-2001,CUST-101,2026-10-16T09:00:00Z,PAYMENT,250.00,LSL,Repeated transaction within file

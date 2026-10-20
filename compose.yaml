@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: finsight-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: finsight
+      POSTGRES_USER: finsight_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finsight_local_dev_only}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - finsight_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  finsight_postgres_data:

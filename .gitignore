@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Testing and quality tools
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors and operating system
+.vscode/
+.idea/
+.DS_Store
+
+# Local data and generated artifacts
+data/raw/
+data/processed/
+models/
+reports/generated/
+# Logs and local artifacts
+*.log
+*.pid
+.coverage.*
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+
+# Local environment files
+.env
+.env.*
+!.env.example

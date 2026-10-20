@@ -1,0 +1,5 @@
+transaction_id,customer_id,transaction_date,transaction_type,amount,currency,description
+TXN-1001,CUST-001,2026-10-15T09:30:00Z,PAYMENT,250.00,LSL,Online purchase
+TXN-1002,CUST-002,2026-10-15T10:15:00Z,TRANSFER,1500.00,LSL,Account transfer
+TXN-1003,CUST-001,2026-10-15T11:45:00Z,REFUND,50.00,LSL,Purchase refund
+TXN-1004,CUST-003,2026-10-16T08:00:00Z,PAYMENT,875.50,LSL,Utility payment
