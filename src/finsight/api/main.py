@@ -1,7 +1,8 @@
+import hmac
 import logging
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -32,6 +33,26 @@ app = FastAPI(
 )
 
 
+def require_api_key(
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+) -> None:
+    """Require an API key in production; keep local development convenient."""
+    if getattr(settings, "app_env", "development").strip().lower() != "production":
+        return
+
+    if not settings.api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="API authentication is not configured.",
+        )
+
+    if not hmac.compare_digest(x_api_key or "", settings.api_key):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing API key.",
+        )
+
+
 @app.get("/health", tags=["Operations"])
 def health_check() -> dict[str, str]:
     return {
@@ -54,7 +75,12 @@ def readiness_check() -> dict[str, str]:
     }
 
 
-@app.post("/imports/csv", tags=["Imports"], status_code=201)
+@app.post(
+    "/imports/csv",
+    tags=["Imports"],
+    status_code=201,
+    dependencies=[Depends(require_api_key)],
+)
 # FastAPI requires File(...) here to declare a required file upload.
 async def upload_csv(file: UploadFile = File(...)) -> dict:  # noqa: B008
     """Upload and process a CSV containing financial transactions."""
@@ -106,7 +132,11 @@ async def upload_csv(file: UploadFile = File(...)) -> dict:  # noqa: B008
         ) from exc
 
 
-@app.get("/imports/{batch_id}", tags=["Imports"])
+@app.get(
+    "/imports/{batch_id}",
+    tags=["Imports"],
+    dependencies=[Depends(require_api_key)],
+)
 def get_import_status(batch_id: UUID) -> dict:
     """Retrieve persisted import statistics and data-quality issues."""
     try:
@@ -162,7 +192,11 @@ def get_import_status(batch_id: UUID) -> dict:
         ) from exc
 
 
-@app.get("/analytics/overview", tags=["Analytics"])
+@app.get(
+    "/analytics/overview",
+    tags=["Analytics"],
+    dependencies=[Depends(require_api_key)],
+)
 def analytics_overview() -> dict:
     """Return aggregate financial transaction metrics."""
     try:
@@ -175,7 +209,11 @@ def analytics_overview() -> dict:
         ) from exc
 
 
-@app.get("/analytics/transactions-over-time", tags=["Analytics"])
+@app.get(
+    "/analytics/transactions-over-time",
+    tags=["Analytics"],
+    dependencies=[Depends(require_api_key)],
+)
 def transactions_over_time(interval: str = "day") -> dict:
     """Return transaction metrics grouped by day or month."""
     try:

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     )
 
     max_upload_size_mb: int = 25
+    api_key: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

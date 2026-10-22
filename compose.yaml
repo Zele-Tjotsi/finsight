@@ -20,5 +20,23 @@ services:
       retries: 10
       start_period: 5s
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      APP_NAME: ${APP_NAME:-FinSight}
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-25}
+      API_KEY: ${API_KEY:-}
+      DATABASE_URL: postgresql+psycopg://finsight_app:${POSTGRES_PASSWORD:-finsight_local_dev_only}@postgres:5432/finsight
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   finsight_postgres_data:
